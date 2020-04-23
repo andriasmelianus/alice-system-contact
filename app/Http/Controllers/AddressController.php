@@ -11,7 +11,7 @@ class AddressController extends Controller
 {
     private $apiResponser;
     private $rules = [
-        'name' => 'required|max:127|unique:addresses'
+        'name' => 'required|max:127'
     ];
     private $address;
 
@@ -32,13 +32,8 @@ class AddressController extends Controller
      * @return Json
      */
     public function create(Request $request){
-        $address = Address::where('name', 'LIKE', $request->name)->first();
-
-        if(!isset($address)){
-            $this->validate($request, $this->rules);
-            $address = Address::create($request->all());
-        }
-
+        $this->validate($request, $this->rules);
+        $address = Address::firstOrCreate($request->all());
         return $this->apiResponser->success($address, Response::HTTP_CREATED);
     }
 

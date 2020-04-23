@@ -11,7 +11,7 @@ class PhoneController extends Controller
 {
     private $apiResponser;
     private $rules = [
-        'number' => 'required|max:127|unique:phones'
+        'number' => 'required|max:127'
     ];
     private $phone;
 
@@ -32,13 +32,8 @@ class PhoneController extends Controller
      * @return Json
      */
     public function create(Request $request){
-        $phone = Phone::where('number', 'LIKE', $request->input('number'))->first();
-
-        if(!isset($phone)){
-            $this->validate($request, $this->rules);
-            $phone = Phone::create($request->all());
-        }
-
+        $this->validate($request, $this->rules);
+        $phone = Phone::firstOrCreate($request->all());
         return $this->apiResponser->success($phone, Response::HTTP_CREATED);
     }
 

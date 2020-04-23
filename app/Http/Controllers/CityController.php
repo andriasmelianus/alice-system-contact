@@ -11,7 +11,7 @@ class CityController extends Controller
 {
     private $apiResponser;
     private $rules = [
-        'name' => 'required|max:127|unique:cities'
+        'name' => 'required|max:127'
     ];
     private $city;
 
@@ -32,13 +32,8 @@ class CityController extends Controller
      * @return Json
      */
     public function create(Request $request){
-        $city = City::where('name', 'LIKE', $request->input('name'))->first();
-
-        if(!isset($city)){
-            $this->validate($request, $this->rules);
-            $city = City::create($request->all());
-        }
-
+        $this->validate($request, $this->rules);
+        $city = City::firstOrCreate($request->all());
         return $this->apiResponser->success($city, Response::HTTP_CREATED);
     }
 

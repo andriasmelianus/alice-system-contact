@@ -11,7 +11,7 @@ class CountryController extends Controller
 {
     private $apiResponser;
     private $rules = [
-        'name' => 'required|max:127|unique:countries'
+        'name' => 'required|max:127'
     ];
     private $country;
 
@@ -32,13 +32,8 @@ class CountryController extends Controller
      * @return Json
      */
     public function create(Request $request){
-        $country = Country::where('name', 'LIKE', $request->input('name'))->first();
-
-        if(!isset($country)){
-            $this->validate($request, $this->rules);
-            $country = Country::create($request->all());
-        }
-
+        $this->validate($request, $this->rules);
+        $country = Country::firstOrCreate($request->all());
         return $this->apiResponser->success($country, Response::HTTP_CREATED);
     }
 

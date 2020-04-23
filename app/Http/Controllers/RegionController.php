@@ -11,7 +11,7 @@ class RegionController extends Controller
 {
     private $apiResponser;
     private $rules = [
-        'name' => 'required|max:127|unique:regions'
+        'name' => 'required|max:127'
     ];
     private $region;
 
@@ -32,13 +32,8 @@ class RegionController extends Controller
      * @return Json
      */
     public function create(Request $request){
-        $region = Region::where('name', 'LIKE', $request->input('name'))->first();
-
-        if(!isset($region)){
-            $this->validate($request, $this->rules);
-            $region = Region::create($request->all());
-        }
-
+        $this->validate($request, $this->rules);
+        $region = Region::firstOrCreate($request->all());
         return $this->apiResponser->success($region, Response::HTTP_CREATED);
     }
 
